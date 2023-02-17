@@ -20,8 +20,8 @@ typedef struct Node {
     char sender[50];
     char name[50];
     char worker[50];
-    int weight;
-    int count;
+    int  weight;
+    int  count;
     Date date;
     struct Node *next;
 } Account;
@@ -104,6 +104,10 @@ void deleteEntry(Account *p) {
     free(p);
 }
 
+/**
+ * @param:  values - the string to be decompressed
+ * @return: date conversion
+ */
 Date convertDate(char *values) {
     Date date;
     int y, m, d;
