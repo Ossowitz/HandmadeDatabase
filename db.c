@@ -118,7 +118,9 @@ Date convertDate(char *values) {
     return date;
 }
 
-// Error
+/**
+ * @brief: error output
+ */
 void printIncorrect(FILE *fout, char line[]) {
     int i = 0;
     fprintf(fout,
@@ -154,10 +156,10 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
     int j = 0, k = 0, i = 0, n = 0;
     int count1 = 0, count2 = 0;
     char *c;
-    while (fields[n][0] != '\0') n++; //считаем количество условий
+    while (fields[n][0] != '\0') n++; // count the number of conditions
     while (j < n) {
-        if (compare(fields[j], weightField)) { // условие для веса
-            if (compare(conds[j], equalOperator)) { //если в условии знак равно
+        if (compare(fields[j], weightField)) { // condition for weight
+            if (compare(conds[j], equalOperator)) { // if condition "equals"
                 if (p->weight == atoi(values[j])) k++;
             } else if (compare(conds[j], notEqualOperator)) {
                 if (p->weight != atoi(values[j])) k++;
@@ -170,7 +172,7 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
             } else if (compare(conds[j], lessOperator)) {
                 if (p->weight < atoi(values[j])) k++;
             }
-        } else if (compare(fields[j], countField)) { //условие для количества
+        } else if (compare(fields[j], countField)) { // condition for count
             if (compare(conds[j], equalOperator)) {
                 if (p->count == atoi(values[j])) k++;
             } else if (compare(conds[j], notEqualOperator)) {
