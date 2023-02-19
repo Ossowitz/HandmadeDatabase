@@ -138,7 +138,7 @@ void printIncorrect(FILE *fout, char line[]) {
 }
 
 /**
- * @return: checks if an entry matches
+ * @brief: checks if an entry matches
  */
 int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Account *p) {
     char senderField[]       = "sender";
@@ -288,44 +288,44 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
     else return 0;
 }
 
-// Процедура для вывода выбранных полей записи
-void print_selected(Account *p, char *order, FILE *fout) {
-    char sender_[] = "sender";
-    char name_[] = "name";
-    char weight_[] = "weight";
-    char count_[] = "count";
-    char worker_[] = "worker";
-    char date_[] = "date";
+/**
+ * @brief: procedure to display selected record fields
+ */
+void printSelected(Account *p, char *order, FILE *fout) {
+    char senderField[] = "sender";
+    char nameField[]   = "name";
+    char weightField[] = "weight";
+    char countField[]  = "count";
+    char workerField[] = "worker";
+    char dateField[]   = "date";
     char x[25];
     int i = 0, j = 0;
-    while (order[j] != '\0') //пока не дойдём до конца порядка
-    {
+    while (order[j] != '\0') { // until we reach the end
         i = 0;
         while (i < 25) x[i++] = '\0';
         i = 0;
         while ((order[j] >= 97 && order[j] <= 122) || order[j] == 95) x[i++] = order[j++];
         j++;
-        if (compare(x, date_)) {
+        if (compare(x, dateField)) {
             fprintf(fout, "date=%d.%d.%d ", p->date.year, p->date.month, p->date.day);
             printf("date=%d.%d.%d ", p->date.year, p->date.month, p->date.day);
-        } else if (compare(x, sender_)) //в зависимости от того, какое поле в массиве х, выводим в файл и консоль
-        {
+        } else if (compare(x, senderField)) { // depending on which field in the x array, we output to the file and the console
             fprintf(fout, "sender=%s ", p->sender);
             printf("sender=%s ", p->sender);
             continue;
-        } else if (compare(x, name_)) {
+        } else if (compare(x, nameField)) {
             fprintf(fout, "name=%s ", p->name);
             printf("name=%s ", p->name);
             continue;
-        } else if (compare(x, worker_)) {
+        } else if (compare(x, workerField)) {
             fprintf(fout, "worker=%s ", p->worker);
             printf("worker=%s ", p->worker);
             continue;
-        } else if (compare(x, weight_)) {
+        } else if (compare(x, weightField)) {
             fprintf(fout, "weight=%d ", p->weight);
             printf("weight=%d ", p->weight);
             continue;
-        } else if (compare(x, count_)) {
+        } else if (compare(x, countField)) {
             fprintf(fout, "count=%d ", p->count);
             printf("count=%d ", p->count);
             continue;
@@ -341,7 +341,7 @@ void select_all(Account *head, char *order, FILE *fout) {
     Account *p = head;
     while (p != NULL) {
         count++;
-        print_selected(p, order, fout);
+        printSelected(p, order, fout);
         p = p->next;
     }
     fprintf(fout, "select: %d\n", count);
@@ -357,7 +357,7 @@ void select1(char fields[25][25], char conds[25][25], char values[25][40], Accou
         if (isSuitable(fields, conds, values, p)) //если подходит под условие
         {
             count++;
-            print_selected(p, order, fout); //выводим выбранные поля этой записи
+            printSelected(p, order, fout); //выводим выбранные поля этой записи
         }
         p = p->next; //проверяем следующую запись
     }
