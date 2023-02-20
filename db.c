@@ -335,8 +335,10 @@ void printSelected(Account *p, char *order, FILE *fout) {
     printf("\n");
 }
 
-// Процедура для вывода всех записей в БД с указанными полями
-void select_all(Account *head, char *order, FILE *fout) {
+/**
+ * @brief: procedure for displaying all records in the database with the specified fields
+ */
+void selectAll(Account *head, char *order, FILE *fout) {
     int count = 0;
     Account *p = head;
     while (p != NULL) {
@@ -655,7 +657,7 @@ int main() {
             } else if (compare(command, selectQuery)) {
                 sscanf(line, "select %s %s", order_list, first_cond);
                 if (*first_cond == '\0') {
-                    select_all(head, order_list, fout);
+                    selectAll(head, order_list, fout);
                     continue;
                 }
                 p_cond = strstr(line, first_cond);
