@@ -350,26 +350,25 @@ void selectAll(Account *head, char *order, FILE *fout) {
     printf("select: %d\n", count);
 }
 
-// процедура для вывода записи, если он подходит под условия
-void select1(char fields[25][25], char conds[25][25], char values[25][40], Account *head, char *order, FILE *fout) {
+/**
+ * @brief: procedure for outputting a record if it matches the conditions
+ */
+void selectEntity(char fields[25][25], char conds[25][25], char values[25][40], Account *head, char *order, FILE *fout) {
     int count = 0;
     Account *p = head;
-    while (p != NULL) //проходим по всем записям
-    {
-        if (isSuitable(fields, conds, values, p)) //если подходит под условие
-        {
+    while (p != NULL) { // go through all records
+        if (isSuitable(fields, conds, values, p)) { // if it fits the condition
             count++;
-            printSelected(p, order, fout); //выводим выбранные поля этой записи
+            printSelected(p, order, fout); // display the selected fields of this record
         }
-        p = p->next; //проверяем следующую запись
+        p = p->next; // check the following entry
     }
     fprintf(fout, "select: %d\n", count);
     printf("select: %d\n", count);
 }
 
 //функция для удаления нужных записей и получения нового указателя на начало списка
-Account *
-delete1(char fields[25][25], char conds[25][25], char values[25][40], Account *head, int *count_free, FILE *fout) {
+Account *delete1(char fields[25][25], char conds[25][25], char values[25][40], Account *head, int *count_free, FILE *fout) {
     int count = 0;
     Account *p = head, *p1 = p;
     while (p != NULL) //пока не дойдём до конца списка
@@ -702,7 +701,7 @@ int main() {
                     } else printIncorrect(fout, line);
 
                 }
-                select1(fields, conds, values, head, order_list, fout);
+                selectEntity(fields, conds, values, head, order_list, fout);
             } else if (compare(command, deleteQuery)) {
                 sscanf(line, "delete %s", first_cond);
                 p_cond = strstr(line, first_cond);
