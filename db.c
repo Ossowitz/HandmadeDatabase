@@ -367,30 +367,29 @@ void selectEntity(char fields[25][25], char conds[25][25], char values[25][40], 
     printf("select: %d\n", count);
 }
 
-//функция для удаления нужных записей и получения нового указателя на начало списка
-Account *delete1(char fields[25][25], char conds[25][25], char values[25][40], Account *head, int *count_free, FILE *fout) {
+/**
+ * @brief: function to remove the desired entries and get a new pointer to the beginning of the list
+ */
+Account *deleteEntity(char fields[25][25], char conds[25][25], char values[25][40], Account *head, int *count_free, FILE *fout) {
     int count = 0;
     Account *p = head, *p1 = p;
-    while (p != NULL) //пока не дойдём до конца списка
+    while (p != NULL) // until we reach the end of the list
     {
         if (isSuitable(fields, conds, values, p)) {
-            if (p == head) //если запись является началом списка
-            {
+            if (p == head) { // if the entry is the beginning of the list
                 head = p->next;
                 p1 = head;
                 deleteEntry(p);
                 (*count_free)++;
                 p = p1;
-            } else if (p->next == NULL) //если запись является концом спискка
-            {
+            } else if (p->next == NULL) { // if the entry is the end of the list
                 p1 = head;
                 while (p1->next != p) p1 = p1->next;
                 p1->next = NULL;
                 deleteEntry(p);
                 (*count_free)++;
                 p = NULL;
-            } else //запись является ни началом, ни концом списка
-            {
+            } else { // the entry is neither the beginning nor the end of the list
                 p1 = head;
                 while (p1->next != p) p1 = p1->next;
                 p1->next = p->next;
@@ -749,7 +748,7 @@ int main() {
                         j++; //считывание условия закончено
                     } else printIncorrect(fout, line);
                 }
-                head = delete1(fields, conds, values, head, &countFree, fout);
+                head = deleteEntity(fields, conds, values, head, &countFree, fout);
             } else if (compare(command, updateQuery)) {
                 sscanf(line, "update %s %s", updates, first_cond);
                 p_cond = strstr(line, first_cond);
