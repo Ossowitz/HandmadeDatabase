@@ -471,13 +471,16 @@ void updateAllList(char updates[1000], Account *head, FILE *fout) {
     printf("update: %d\n", count);
 }
 
-int is_similar(char fields[1000], Account *p, Account *p1) {
-    char sender_[] = "sender";
-    char name_[] = "name";
-    char weight_[] = "weight";
-    char count_[] = "count";
-    char worker_[] = "worker";
-    char date_[] = "date";
+/**
+ * @brief: compare
+ */
+int isSimilar(char fields[1000], Account *p, Account *p1) {
+    char senderField[] = "sender";
+    char nameField[] = "name";
+    char weightField[] = "weight";
+    char countField[] = "count";
+    char workerField[] = "worker";
+    char dateField[] = "date";
     char field[20] = {'\0'}, *c = fields;
     int i = 0;
     for (i = 0; fields[i] != '\0'; i++);
@@ -486,22 +489,22 @@ int is_similar(char fields[1000], Account *p, Account *p1) {
         for (i = 0; *c != ','; i++)
             field[i] = *c++;
         c++;
-        if (compare(field, sender_)) {
+        if (compare(field, senderField)) {
             if ((compare(p->sender, p1->sender)) == 0) return 0;
         } else {
-            if (compare(field, name_)) {
+            if (compare(field, nameField)) {
                 if ((compare(p->name, p1->name)) == 0) return 0;
             } else {
-                if (compare(field, worker_)) {
+                if (compare(field, workerField)) {
                     if ((compare(p->worker, p1->worker)) == 0) return 0;
                 } else {
-                    if (compare(field, weight_)) {
+                    if (compare(field, weightField)) {
                         if (p->weight != p1->weight) return 0;
                     } else {
-                        if (compare(field, count_)) {
+                        if (compare(field, countField)) {
                             if (p->count != p1->count) return 0;
                         } else {
-                            if (compare(field, date_)) {
+                            if (compare(field, dateField)) {
                                 if (!(compareDate(p->date, p1->date))) return 0;
 
                             }
@@ -521,7 +524,7 @@ Account *uniq(char fields[1000], Account *head, int *count_free, FILE *fout) {
     while (p != NULL) {
         p1 = p->next;
         while (p1 != NULL) {
-            if (is_similar(fields, p, p1)) {
+            if (isSimilar(fields, p, p1)) {
                 if (p == head) {
                     head = p->next;
                     deleteEntry(p);
