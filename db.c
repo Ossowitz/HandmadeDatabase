@@ -456,7 +456,10 @@ void updateList(char fields[25][25], char conds[25][25], char values[25][40], ch
     printf("update: %d\n", count);
 }
 
-void update_all_list(char updates[1000], Account *head, FILE *fout) {
+/**
+ * @brief: update all list
+ */
+void updateAllList(char updates[1000], Account *head, FILE *fout) {
     int count = 0;
     Account *p = head;
     while (p != NULL) {
@@ -755,7 +758,7 @@ int main() {
                 sscanf(line, "update %s %s", updates, first_cond);
                 p_cond = strstr(line, first_cond);
                 if (*first_cond == '\0') {
-                    update_all_list(updates, head, fout);
+                    updateAllList(updates, head, fout);
                     continue;
                 }
                 while (*p_cond != '\0') {
