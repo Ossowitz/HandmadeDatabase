@@ -407,33 +407,34 @@ Account *deleteEntity(char fields[25][25], char conds[25][25], char values[25][4
     return head;
 }
 
-// Изменяет данные полей
-void update_p(char updates[1000], Account *p) {
-    char sender_[] = "sender";
-    char name_[] = "name";
-    char weight_[] = "weight";
-    char count_[] = "count";
-    char worker_[] = "worker";
-    char date_[] = "date";
+/**
+ * @brief: changes field data
+ */
+void updateFieldEntity(char updates[1000], Account *p) {
+    char senderField[] = "sender";
+    char nameField[]   = "name";
+    char weightField[] = "weight";
+    char countField[]  = "count";
+    char workerField[] = "worker";
+    char dateField[]   = "date";
     int i = 0;
     char *c = updates;
     char field[25], value[20];
-    for (i = 0; updates[i] != '\0'; i++); //считаем длину строки
-    if (updates[i - 1] != ',') updates[i] = ','; //ставим в конец строки запятую, если её там нет
-    while (*c != '\0') //пока не дойдём до конца строки
-    {
+    for (i = 0; updates[i] != '\0'; i++); // count the length of the string
+    if (updates[i - 1] != ',') updates[i] = ','; // put a comma at the end of the line if it is not there
+    while (*c != '\0') { // until we reach the end of the line
         for (i = 0; i < 25; i++) field[i] = '\0';
         for (i = 0; i < 20; i++) value[i] = '\0';
-        for (i = 0; *c != '='; i++) field[i] = *c++; //заполняем массив названием поля
+        for (i = 0; *c != '='; i++) field[i] = *c++; // fill array with field name
         c++;
         for (i = 0; *c != ','; i++) value[i] = *c++;
         c++;
-        if (compare(field, sender_)) strcpy(p->sender, value);
-        else if (compare(field, name_)) strcpy(p->name, value);
-        else if (compare(field, worker_)) strcpy(p->worker, value);
-        else if (compare(field, weight_)) p->weight = atoi(value);
-        else if (compare(field, count_)) p->count = atoi(value);
-        else if (compare(field, date_)) p->date = convertDate(value);
+        if (compare(field, senderField)) strcpy(p->sender, value);
+        else if (compare(field, nameField)) strcpy(p->name, value);
+        else if (compare(field, workerField)) strcpy(p->worker, value);
+        else if (compare(field, weightField)) p->weight = atoi(value);
+        else if (compare(field, countField)) p->count = atoi(value);
+        else if (compare(field, dateField)) p->date = convertDate(value);
     }
 }
 
@@ -445,7 +446,7 @@ void update_list(char fields[25][25], char conds[25][25], char values[25][40], c
     {
         if (isSuitable(fields, conds, values, p)) //проверяем запись на соответствие условиям
         {
-            update_p(updates, p);
+            updateFieldEntity(updates, p);
             count++;
         }
         p = p->next;
@@ -458,7 +459,7 @@ void update_all_list(char updates[1000], Account *head, FILE *fout) {
     int count = 0;
     Account *p = head;
     while (p != NULL) {
-        update_p(updates, p);
+        updateFieldEntity(updates, p);
         count++;
         p = p->next;
     }
