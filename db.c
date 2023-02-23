@@ -1,3 +1,10 @@
+/**
+ * @author:  https://github.com/Ossowitz
+ * @author:  https://t.me/DispatcherServlet
+ * @version: 1.0
+ * TODO: implementation DB
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -475,14 +482,14 @@ void updateAllList(char updates[1000], Account *head, FILE *fout) {
  * @brief: compare
  */
 int isSimilar(char fields[1000], Account *p, Account *p1) {
-    char senderField[] = "sender";
-    char nameField[] = "name";
-    char weightField[] = "weight";
-    char countField[] = "count";
-    char workerField[] = "worker";
-    char dateField[] = "date";
-    char field[20] = {'\0'}, *c = fields;
     int i = 0;
+    char senderField[] = "sender";
+    char nameField[]   = "name";
+    char weightField[] = "weight";
+    char countField[]  = "count";
+    char workerField[] = "worker";
+    char dateField[]   = "date";
+    char field[20]     = {'\0'}, *c = fields;
     for (i = 0; fields[i] != '\0'; i++);
     fields[i] = ',';
     while (*c != '\0') {
