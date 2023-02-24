@@ -524,7 +524,9 @@ int isSimilar(char fields[1000], Account *p, Account *p1) {
     return 1;
 }
 
-// Функция для удаления дубликатов
+/**
+ * @brief: function to remove duplicates
+ */
 Account *uniq(char fields[1000], Account *head, int *count_free, FILE *fout) {
     int count = 0;
     Account *p = head, *p1 = NULL, *prev = NULL, *p2 = NULL;
