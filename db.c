@@ -438,14 +438,15 @@ void updateFieldEntity(char updates[1000], Account *p) {
     }
 }
 
-void update_list(char fields[25][25], char conds[25][25], char values[25][40], char updates[1000], Account *head,
-                 FILE *fout) {
+/**
+ * @brief: update list
+ */
+void updateList(char fields[25][25], char conds[25][25], char values[25][40], char updates[1000], Account *head,
+                FILE *fout) {
     int count = 0;
     Account *p = head;
-    while (p != NULL) //пока не дойдёт до конца списка
-    {
-        if (isSuitable(fields, conds, values, p)) //проверяем запись на соответствие условиям
-        {
+    while (p != NULL) { // until you reach the end of the list
+        if (isSuitable(fields, conds, values, p)) { // check the record for compliance with the conditions
             updateFieldEntity(updates, p);
             count++;
         }
@@ -797,7 +798,7 @@ int main() {
                         j++; //считывание условия закончено
                     } else printIncorrect(fout, line);
                 }
-                update_list(fields, conds, values, updates, head, fout);
+                updateList(fields, conds, values, updates, head, fout);
             } else if (compare(command, uniqQuery)) {
                 if (sscanf(line, "uniq %s", order_list) == EOF) {
                     printIncorrect(fout, line);
