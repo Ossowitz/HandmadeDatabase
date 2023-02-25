@@ -760,9 +760,9 @@ int main() {
                     } else if (compare(fields[j], dateField)) {
                         sscanf(p_cond, "%s'%s'", conds[j], values[j]);
                         while (*p_cond != ' ' && *p_cond != '\0')
-                            p_cond++; //двигаем указатель p_cond до пробела или конца строки
+                            p_cond++; // move the p_cond pointer to a space or end of line
                         if (*p_cond == ' ') p_cond++;
-                        j++; //считывание условия закончено
+                        j++; // condition read finished
                     } else printIncorrect(fout, line);
                 }
                 head = deleteEntity(fields, conds, values, head, &countFree, fout);
