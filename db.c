@@ -567,7 +567,7 @@ int main() {
 
     Account *p = NULL, *cur = NULL, *head = NULL;
     int n = 0, countMalloc = 0, countRealloc = 0, countCalloc = 0, countFree = 0, i = 0, j = 0;
-    char *p_cond = NULL, order_list[1000] = {'\0'}, first_cond[100] = {'\0'}, c = (char) NULL;
+    char *p_cond = NULL, order_list[1000] = {'\0'}, first_cond[100] = {'\0'}, c;
     char command[100]    = {'\0'},
          line[1000]      = {'\0'},
          strStatus[10]   = {'\0'},
