@@ -1,0 +1,14 @@
+insert date=13.24.2021 ,sender=tihomirov ,name=ilya ,worker=alexeyevich ,weight=168,count=10
+
+insert date=2.3.2012 ,sender=tihomirov ,name=alex ,worker=evgenevich ,weight=123,count=20
+insert date=2.3.2012 ,sender=tihomirov ,name=alex ,worker=evgenevich ,weight=123,count=30
+insert date=2.3.2012 ,sender=tihomirov ,name=alex ,worker=evgenevich ,weight=123,count=40
+insert date=2.3.2012 ,sender=tihomirov ,name=alex ,worker=evgenevich ,weight=123
+select sender,name,worker,weight,count count>15
+select date,sender,name,worker,weight,count count>9
+delete count>10
+select date,sender,name,worker,weight,count
+insert date=2.3.2012 ,sender=tihomirov ,name=alex ,worker=evgenevich ,weight=123,count=40
+update count=15 name==[ilya]
+select date,sender,name,worker,weight,count
+exit

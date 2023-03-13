@@ -1,0 +1,22 @@
+select: 1
+select: 2
+select: 3
+select: 4
+incorrect: insert date=2.3.2012
+sender=tihomirov name=alex worker=evgenevich weight=123 count=20 
+sender=tihomirov name=alex worker=evgenevich weight=123 count=30 
+sender=tihomirov name=alex worker=evgenevich weight=123 count=40 
+select: 3
+date=13.24.2021 sender=tihomirov name=ilya worker=alexeyevich weight=168 count=10 
+date=2.3.2012 sender=tihomirov name=alex worker=evgenevich weight=123 count=20 
+date=2.3.2012 sender=tihomirov name=alex worker=evgenevich weight=123 count=30 
+date=2.3.2012 sender=tihomirov name=alex worker=evgenevich weight=123 count=40 
+select: 4
+delete: 3
+date=13.24.2021 sender=tihomirov name=ilya worker=alexeyevich weight=168 count=10 
+select: 1
+select: 2
+update: 1
+date=13.24.2021 sender=tihomirov name=ilya worker=alexeyevich weight=168 count=15 
+date=2.3.2012 sender=tihomirov name=alex worker=evgenevich weight=123 count=40 
+select: 2
