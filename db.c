@@ -512,26 +512,31 @@ int main() {
     memstat = fopen(MEMSTAT_FILE, "w");
     checkFileOpened(fin);
 
-    char command[100] = {'\0'}, line[1000] = {'\0'}, str_status[10] = {'\0'}, dates[15] = {'\0'};
+    char command[100] = {'\0'},
+    line[1000] = {'\0'},
+    str_status[10] = {'\0'},
+    dates[15] = {'\0'};
     account *p = NULL, *cur = NULL, *head = NULL;
     char *p_sender = NULL, *p_name = NULL, *p_worker = NULL, *p_weight = NULL, *p_count = NULL, *p_date = NULL, c = (char) NULL;
     int n = 0, count_malloc = 0, count_realloc = 0, count_calloc = 0, count_free = 0, i = 0, j = 0;
     char *p_cond = NULL, order_list[1000] = {'\0'}, first_cond[100] = {'\0'};
     char fields[25][25] = {'\0'}, conds[25][25] = {'\0'}, values[25][40] = {'\0'};
     char updates[1000] = {'\0'};
-    char exit_[] = "exit";
-    char insert_[] = "insert";
-    char delete_[] = "delete";
-    char select_[] = "select";
-    char sender_[] = "sender";
-    char name_[] = "name";
-    char weight_[] = "weight";
-    char count_[] = "count";
-    char worker_[] = "worker";
-    char date_[] = "date";
-    char update_[] = "update";
-    char uniq_[] = "uniq";
-    // Считываем записи из файла
+
+    char exitCommand[]  = "exit";
+    char insertQuery[]  = "insert";
+    char deleteQuery[]  = "delete";
+    char selectQuery[]  = "select";
+    char updateQuery[]  = "update";
+    char uniqQuery[]    = "uniq";
+    char senderField[]  = "sender";
+    char nameField[]    = "name";
+    char weightField[]  = "weight";
+    char countField[]   = "count";
+    char workerField[]  = "worker";
+    char dateField[]    = "date";
+
+    // Reading records from a file
     while (1) {
         while (!feof(fin)) {
             for (i = 0; i < 100; i++) first_cond[i] = '\0';
@@ -556,12 +561,12 @@ int main() {
             if (*line == '\n') {
                 continue;
             }
-            if (compare(command, exit_)) {
+            if (compare(command, exitCommand)) {
                 fprintf(memstat, "malloc:%d\nrealloc:%d\ncalloc:%d\nfree:%d\n", count_malloc, count_realloc,
                         count_calloc, count_free);
                 return 0;
             }
-            if (compare(command, insert_)) {
+            if (compare(command, insertQuery)) {
                 if ((p_sender = strstr(line, "sender=")) == NULL) {
                     print_incorrect(fout, line);
                     continue;
@@ -612,7 +617,7 @@ int main() {
                     fprintf(fout, "select: %d\n", ++n);
                     printf("select: %d\n", n);
                 }
-            } else if (compare(command, select_)) {
+            } else if (compare(command, selectQuery)) {
                 sscanf(line, "select %s %s", order_list, first_cond);
                 if (*first_cond == '\0') {
                     select_all(head, order_list, fout);
@@ -625,7 +630,7 @@ int main() {
                         fields[j][i++] = c;
                     }
                     p_cond--;
-                    if (compare(fields[j], weight_) || compare(fields[j], count_)) {
+                    if (compare(fields[j], weightField) || compare(fields[j], countField)) {
                         i = 0;
                         while (((c = *p_cond++) < 48 || c > 57) && c != 45) {
                             conds[j][i++] = c;
@@ -635,8 +640,8 @@ int main() {
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
                         if (*p_cond == ' ') p_cond++;
                         j++;
-                    } else if (compare(fields[j], sender_) || compare(fields[j], name_) ||
-                               compare(fields[j], worker_)) {
+                    } else if (compare(fields[j], senderField) || compare(fields[j], nameField) ||
+                               compare(fields[j], workerField)) {
                         for (i = 0; *p_cond != '['; i++) {
                             conds[j][i] = *p_cond++;
                         }
@@ -651,7 +656,7 @@ int main() {
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
                         if (*p_cond == ' ') p_cond++;
                         j++;
-                    } else if (compare(fields[j], date_)) {
+                    } else if (compare(fields[j], dateField)) {
                         sscanf(p_cond, "%s'%s'", conds[j], values[j]);
                         while (*p_cond != ' ' && *p_cond != '\0')
                             p_cond++; //двигаем указатель p_cond до пробела или конца строки
@@ -661,7 +666,7 @@ int main() {
 
                 }
                 select1(fields, conds, values, head, order_list, fout);
-            } else if (compare(command, delete_)) {
+            } else if (compare(command, deleteQuery)) {
                 sscanf(line, "delete %s", first_cond);
                 p_cond = strstr(line, first_cond);
                 if (*first_cond == '\0') {
@@ -674,7 +679,7 @@ int main() {
                         fields[j][i++] = c;
                     }
                     p_cond--;
-                    if (compare(fields[j], weight_) || compare(fields[j], count_)) {
+                    if (compare(fields[j], weightField) || compare(fields[j], countField)) {
                         i = 0;
                         while (((c = *p_cond++) < 48 || c > 57) && c != 45) {
                             conds[j][i++] = c;
@@ -684,8 +689,8 @@ int main() {
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
                         if (*p_cond == ' ') p_cond++;
                         j++;
-                    } else if (compare(fields[j], sender_) || compare(fields[j], name_) ||
-                               compare(fields[j], worker_)) {
+                    } else if (compare(fields[j], senderField) || compare(fields[j], nameField) ||
+                               compare(fields[j], workerField)) {
                         for (i = 0; *p_cond != '['; i++) {
                             conds[j][i] = *p_cond++;
                         }
@@ -700,7 +705,7 @@ int main() {
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
                         if (*p_cond == ' ') p_cond++;
                         j++;
-                    } else if (compare(fields[j], date_)) {
+                    } else if (compare(fields[j], dateField)) {
                         sscanf(p_cond, "%s'%s'", conds[j], values[j]);
                         while (*p_cond != ' ' && *p_cond != '\0')
                             p_cond++; //двигаем указатель p_cond до пробела или конца строки
@@ -709,7 +714,7 @@ int main() {
                     } else print_incorrect(fout, line);
                 }
                 head = delete1(fields, conds, values, head, &count_free, fout);
-            } else if (compare(command, update_)) {
+            } else if (compare(command, updateQuery)) {
                 sscanf(line, "update %s %s", updates, first_cond);
                 p_cond = strstr(line, first_cond);
                 if (*first_cond == '\0') {
@@ -722,7 +727,7 @@ int main() {
                         fields[j][i++] = c;
                     }
                     p_cond--;
-                    if (compare(fields[j], weight_) || compare(fields[j], count_)) {
+                    if (compare(fields[j], weightField) || compare(fields[j], countField)) {
                         i = 0;
                         while (((c = *p_cond++) < 48 || c > 57) && c != 45) {
                             conds[j][i++] = c;
@@ -732,8 +737,8 @@ int main() {
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
                         if (*p_cond == ' ') p_cond++;
                         j++;
-                    } else if (compare(fields[j], sender_) || compare(fields[j], name_) ||
-                               compare(fields[j], worker_)) {
+                    } else if (compare(fields[j], senderField) || compare(fields[j], nameField) ||
+                               compare(fields[j], workerField)) {
                         for (i = 0; *p_cond != '['; i++) {
                             conds[j][i] = *p_cond++;
                         }
@@ -748,7 +753,7 @@ int main() {
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
                         if (*p_cond == ' ') p_cond++;
                         j++;
-                    } else if (compare(fields[j], date_)) {
+                    } else if (compare(fields[j], dateField)) {
                         sscanf(p_cond, "%s'%s'", conds[j], values[j]);
                         while (*p_cond != ' ' && *p_cond != '\0')
                             p_cond++; //двигаем указатель p_cond до пробела или конца строки
@@ -757,7 +762,7 @@ int main() {
                     } else print_incorrect(fout, line);
                 }
                 update_list(fields, conds, values, updates, head, fout);
-            } else if (compare(command, uniq_)) {
+            } else if (compare(command, uniqQuery)) {
                 if (sscanf(line, "uniq %s", order_list) == EOF) {
                     print_incorrect(fout, line);
                     continue;
