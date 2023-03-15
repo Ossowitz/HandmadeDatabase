@@ -27,7 +27,17 @@ typedef struct Node {
     struct Node *next;
 } account;
 
-void checkFileOpened(FILE *fin);
+void checkFileOpened(FILE *fin) {
+    if (fin == NULL) {
+        printf(EXCEPTION,
+               OPEN_FILE_EXCEPTION
+        );
+        fprintf(fin,
+                OPEN_FILE_EXCEPTION
+        );
+        exit(1);
+    }
+}
 
 int compare(char *s, char *x) {
     int i = 0;
@@ -512,16 +522,17 @@ int main() {
     memstat = fopen(MEMSTAT_FILE, "w");
     checkFileOpened(fin);
 
-    char command[100] = {'\0'},
-    line[1000] = {'\0'},
-    str_status[10] = {'\0'},
-    dates[15] = {'\0'};
     account *p = NULL, *cur = NULL, *head = NULL;
-    char *p_sender = NULL, *p_name = NULL, *p_worker = NULL, *p_weight = NULL, *p_count = NULL, *p_date = NULL, c = (char) NULL;
-    int n = 0, count_malloc = 0, count_realloc = 0, count_calloc = 0, count_free = 0, i = 0, j = 0;
-    char *p_cond = NULL, order_list[1000] = {'\0'}, first_cond[100] = {'\0'};
-    char fields[25][25] = {'\0'}, conds[25][25] = {'\0'}, values[25][40] = {'\0'};
-    char updates[1000] = {'\0'};
+    int n = 0, countMalloc = 0, countRealloc = 0, countCalloc = 0, countFree = 0, i = 0, j = 0;
+    char *p_cond = NULL, order_list[1000] = {'\0'}, first_cond[100] = {'\0'}, c = (char) NULL;
+    char command[100]    = {'\0'},
+         line[1000]      = {'\0'},
+         strStatus[10]   = {'\0'},
+         dates[15]       = {'\0'};
+    char *p_sender = NULL, *p_name = NULL, *p_worker = NULL,
+         *p_weight = NULL, *p_count = NULL, *p_date = NULL;
+    char fields[25][25] = {'\0'}, conds[25][25] = {'\0'},
+         values[25][40] = {'\0'}, updates[1000] = {'\0'};
 
     char exitCommand[]  = "exit";
     char insertQuery[]  = "insert";
@@ -554,16 +565,15 @@ int main() {
                     values[j][i] = '\0';
                 }
             }
-            i = 0;
-            j = 0;
+            i = 0; j = 0;
             fgets(line, 1000, fin);
             sscanf(line, "%s", command);
             if (*line == '\n') {
                 continue;
             }
             if (compare(command, exitCommand)) {
-                fprintf(memstat, "malloc:%d\nrealloc:%d\ncalloc:%d\nfree:%d\n", count_malloc, count_realloc,
-                        count_calloc, count_free);
+                fprintf(memstat, "malloc:%d\nrealloc:%d\ncalloc:%d\nfree:%d\n", countMalloc, countRealloc,
+                        countCalloc, countFree);
                 return 0;
             }
             if (compare(command, insertQuery)) {
@@ -592,7 +602,7 @@ int main() {
                     continue;
                 }
                 cur = (account *) malloc(sizeof(account));
-                count_malloc++;
+                countMalloc++;
                 sscanf(p_date, "date=%s", dates);
                 cur->date = convert_date(dates);
                 sscanf(p_sender, "sender=%s", cur->sender);
@@ -607,8 +617,7 @@ int main() {
                     fprintf(fout, "select: %d\n", ++n);
                     printf("select: %d\n", n);
                 } else {
-                    p = head;
-                    n = 1;
+                    p = head; n = 1;
                     while (p->next != NULL) {
                         p = p->next;
                         n++;
@@ -713,7 +722,7 @@ int main() {
                         j++; //считывание условия закончено
                     } else print_incorrect(fout, line);
                 }
-                head = delete1(fields, conds, values, head, &count_free, fout);
+                head = delete1(fields, conds, values, head, &countFree, fout);
             } else if (compare(command, updateQuery)) {
                 sscanf(line, "update %s %s", updates, first_cond);
                 p_cond = strstr(line, first_cond);
@@ -767,22 +776,10 @@ int main() {
                     print_incorrect(fout, line);
                     continue;
                 }
-                head = uniq(order_list, head, &count_free, fout);
+                head = uniq(order_list, head, &countFree, fout);
             } else print_incorrect(fout, line);
         }
         fin = stdin;
     }
     return 0;
-}
-
-void checkFileOpened(FILE *fin) {
-    if (fin == NULL) {
-        printf(EXCEPTION,
-               OPEN_FILE_EXCEPTION
-        );
-        fprintf(fin,
-                OPEN_FILE_EXCEPTION
-        );
-        exit(1);
-    }
 }
