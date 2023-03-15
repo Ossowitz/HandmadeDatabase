@@ -2,20 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define INPUT_FILE "input.txt"
-#define OUTPUT_FILE "output.txt"
-#define MEMSTAT_FILE "memstat.txt"
+#define INPUT_FILE              "input.txt"
+#define OUTPUT_FILE             "output.txt"
+#define MEMSTAT_FILE            "memstat.txt"
 
-#define EXCEPTION           "\033[1;31m%s\033[0m\n"
-#define STATELESS           "\033[1;32m%s\033[0m\n"
+#define EXCEPTION               "\033[1;31m%s\033[0m\n"
+#define STATELESS               "\033[1;32m%s\033[0m\n"
 
-#define OPEN_FILE_EXCEPTION         "+ OPEN_FILE_EXCEPTION +"
+#define OPEN_FILE_EXCEPTION     "+ OPEN_FILE_EXCEPTION +"
 
 typedef struct Date {
     int day;
     int month;
     int year;
-} date_struct;
+} Date;
 
 typedef struct Node {
     char sender[50];
@@ -23,9 +23,9 @@ typedef struct Node {
     char worker[50];
     int weight;
     int count;
-    date_struct date;
+    Date date;
     struct Node *next;
-} account;
+} Account;
 
 void checkFileOpened(FILE *fin) {
     if (fin == NULL) {
@@ -47,7 +47,7 @@ int compare(char *s, char *x) {
     return 1;
 }
 
-int compare_date(date_struct date1, date_struct date2) {
+int compare_date(Date date1, Date date2) {
     if (date1.year == date2.year) {
         if (date1.month == date2.month) {
             if (date1.day == date2.day) {
@@ -70,7 +70,7 @@ int compare_date(date_struct date1, date_struct date2) {
 }
 
 // Удаление записи с БД и освобождение памяти
-void free_p(account *p) {
+void free_p(Account *p) {
     int i = 0;
     p->date.year = -1;
     p->date.month = -1;
@@ -86,8 +86,8 @@ void free_p(account *p) {
     free(p);
 }
 
-date_struct convert_date(char *values) {
-    date_struct date;
+Date convert_date(char *values) {
+    Date date;
     int y, m, d;
     sscanf(values, "%d.%d.%d", &y, &m, &d);
     date.year = y;
@@ -110,7 +110,7 @@ void print_incorrect(FILE *fout, char line[]) {
 }
 
 /* Проверяет, подходит ли запись */
-int is_suitable(char fields[25][25], char conds[25][25], char values[25][40], account *p) {
+int is_suitable(char fields[25][25], char conds[25][25], char values[25][40], Account *p) {
     char sender_[] = "sender";
     char name_[] = "name";
     char weight_[] = "weight";
@@ -263,7 +263,7 @@ int is_suitable(char fields[25][25], char conds[25][25], char values[25][40], ac
 }
 
 // Процедура для вывода выбранных полей записи
-void print_selected(account *p, char *order, FILE *fout) {
+void print_selected(Account *p, char *order, FILE *fout) {
     char sender_[] = "sender";
     char name_[] = "name";
     char weight_[] = "weight";
@@ -310,9 +310,9 @@ void print_selected(account *p, char *order, FILE *fout) {
 }
 
 // Процедура для вывода всех записей в БД с указанными полями
-void select_all(account *head, char *order, FILE *fout) {
+void select_all(Account *head, char *order, FILE *fout) {
     int count = 0;
-    account *p = head;
+    Account *p = head;
     while (p != NULL) {
         count++;
         print_selected(p, order, fout);
@@ -323,9 +323,9 @@ void select_all(account *head, char *order, FILE *fout) {
 }
 
 // процедура для вывода записи, если он подходит под условия
-void select1(char fields[25][25], char conds[25][25], char values[25][40], account *head, char *order, FILE *fout) {
+void select1(char fields[25][25], char conds[25][25], char values[25][40], Account *head, char *order, FILE *fout) {
     int count = 0;
-    account *p = head;
+    Account *p = head;
     while (p != NULL) //проходим по всем записям
     {
         if (is_suitable(fields, conds, values, p)) //если подходит под условие
@@ -340,10 +340,10 @@ void select1(char fields[25][25], char conds[25][25], char values[25][40], accou
 }
 
 //функция для удаления нужных записей и получения нового указателя на начало списка
-account *
-delete1(char fields[25][25], char conds[25][25], char values[25][40], account *head, int *count_free, FILE *fout) {
+Account *
+delete1(char fields[25][25], char conds[25][25], char values[25][40], Account *head, int *count_free, FILE *fout) {
     int count = 0;
-    account *p = head, *p1 = p;
+    Account *p = head, *p1 = p;
     while (p != NULL) //пока не дойдём до конца списка
     {
         if (is_suitable(fields, conds, values, p)) {
@@ -382,7 +382,7 @@ delete1(char fields[25][25], char conds[25][25], char values[25][40], account *h
 }
 
 // Изменяет данные полей
-void update_p(char updates[1000], account *p) {
+void update_p(char updates[1000], Account *p) {
     char sender_[] = "sender";
     char name_[] = "name";
     char weight_[] = "weight";
@@ -411,10 +411,10 @@ void update_p(char updates[1000], account *p) {
     }
 }
 
-void update_list(char fields[25][25], char conds[25][25], char values[25][40], char updates[1000], account *head,
+void update_list(char fields[25][25], char conds[25][25], char values[25][40], char updates[1000], Account *head,
                  FILE *fout) {
     int count = 0;
-    account *p = head;
+    Account *p = head;
     while (p != NULL) //пока не дойдёт до конца списка
     {
         if (is_suitable(fields, conds, values, p)) //проверяем запись на соответствие условиям
@@ -428,9 +428,9 @@ void update_list(char fields[25][25], char conds[25][25], char values[25][40], c
     printf("update: %d\n", count);
 }
 
-void update_all_list(char updates[1000], account *head, FILE *fout) {
+void update_all_list(char updates[1000], Account *head, FILE *fout) {
     int count = 0;
-    account *p = head;
+    Account *p = head;
     while (p != NULL) {
         update_p(updates, p);
         count++;
@@ -440,7 +440,7 @@ void update_all_list(char updates[1000], account *head, FILE *fout) {
     printf("update: %d\n", count);
 }
 
-int is_similar(char fields[1000], account *p, account *p1) {
+int is_similar(char fields[1000], Account *p, Account *p1) {
     char sender_[] = "sender";
     char name_[] = "name";
     char weight_[] = "weight";
@@ -484,9 +484,9 @@ int is_similar(char fields[1000], account *p, account *p1) {
 }
 
 // Функция для удаления дубликатов
-account *uniq(char fields[1000], account *head, int *count_free, FILE *fout) {
+Account *uniq(char fields[1000], Account *head, int *count_free, FILE *fout) {
     int count = 0;
-    account *p = head, *p1 = NULL, *prev = NULL, *p2 = NULL;
+    Account *p = head, *p1 = NULL, *prev = NULL, *p2 = NULL;
     while (p != NULL) {
         p1 = p->next;
         while (p1 != NULL) {
@@ -522,7 +522,7 @@ int main() {
     memstat = fopen(MEMSTAT_FILE, "w");
     checkFileOpened(fin);
 
-    account *p = NULL, *cur = NULL, *head = NULL;
+    Account *p = NULL, *cur = NULL, *head = NULL;
     int n = 0, countMalloc = 0, countRealloc = 0, countCalloc = 0, countFree = 0, i = 0, j = 0;
     char *p_cond = NULL, order_list[1000] = {'\0'}, first_cond[100] = {'\0'}, c = (char) NULL;
     char command[100]    = {'\0'},
@@ -601,7 +601,7 @@ int main() {
                     print_incorrect(fout, line);
                     continue;
                 }
-                cur = (account *) malloc(sizeof(account));
+                cur = (Account *) malloc(sizeof(Account));
                 countMalloc++;
                 sscanf(p_date, "date=%s", dates);
                 cur->date = convert_date(dates);
