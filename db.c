@@ -7,7 +7,6 @@
 #define MEMSTAT_FILE            "memstat.txt"
 
 #define EXCEPTION               "\033[1;31m%s\033[0m\n"
-#define STATELESS               "\033[1;32m%s\033[0m\n"
 
 #define OPEN_FILE_EXCEPTION     "+ OPEN_FILE_EXCEPTION +"
 
@@ -47,7 +46,7 @@ int compare(char *s, char *x) {
     return 1;
 }
 
-int compare_date(Date date1, Date date2) {
+int compareDate(Date date1, Date date2) {
     if (date1.year == date2.year) {
         if (date1.month == date2.month) {
             if (date1.day == date2.day) {
@@ -70,14 +69,13 @@ int compare_date(Date date1, Date date2) {
 }
 
 // Удаление записи с БД и освобождение памяти
-void free_p(Account *p) {
-    int i = 0;
+void deleteEntry(Account *p) {
     p->date.year = -1;
     p->date.month = -1;
     p->date.day = -1;
     p->weight = -1;
     p->count = -1;
-    for (i = 0; i < 50; i++) {
+    for (int i = 0; i < 50; i++) {
         p->sender[i] = '\0';
         p->name[i] = '\0';
         p->sender[i] = '\0';
@@ -86,7 +84,7 @@ void free_p(Account *p) {
     free(p);
 }
 
-Date convert_date(char *values) {
+Date convertDate(char *values) {
     Date date;
     int y, m, d;
     sscanf(values, "%d.%d.%d", &y, &m, &d);
@@ -97,7 +95,7 @@ Date convert_date(char *values) {
 }
 
 // Error
-void print_incorrect(FILE *fout, char line[]) {
+void printIncorrect(FILE *fout, char line[]) {
     int i = 0;
     fprintf(fout, "incorrect: ");
     printf("incorrect: ");
@@ -110,7 +108,7 @@ void print_incorrect(FILE *fout, char line[]) {
 }
 
 /* Проверяет, подходит ли запись */
-int is_suitable(char fields[25][25], char conds[25][25], char values[25][40], Account *p) {
+int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Account *p) {
     char sender_[] = "sender";
     char name_[] = "name";
     char weight_[] = "weight";
@@ -243,17 +241,17 @@ int is_suitable(char fields[25][25], char conds[25][25], char values[25][40], Ac
             }
         } else if (compare(fields[j], date_)) {
             if (compare(conds[j], equal_)) {
-                if (compare_date(p->date, convert_date(values[j])) == 0) k++;
+                if (compareDate(p->date, convertDate(values[j])) == 0) k++;
             } else if (compare(conds[j], notequal_)) {
-                if (compare_date(p->date, convert_date(values[j])) != 0) k++;
+                if (compareDate(p->date, convertDate(values[j])) != 0) k++;
             } else if (compare(conds[j], more_)) {
-                if (compare_date(p->date, convert_date(values[j])) == 1) k++;
+                if (compareDate(p->date, convertDate(values[j])) == 1) k++;
             } else if (compare(conds[j], less_)) {
-                if (compare_date(p->date, convert_date(values[j])) == -1) k++;
+                if (compareDate(p->date, convertDate(values[j])) == -1) k++;
             } else if (compare(conds[j], moreequal_)) {
-                if (compare_date(p->date, convert_date(values[j])) != -1) k++;
+                if (compareDate(p->date, convertDate(values[j])) != -1) k++;
             } else if (compare(conds[j], lessequal_)) {
-                if (compare_date(p->date, convert_date(values[j])) != 1) k++;
+                if (compareDate(p->date, convertDate(values[j])) != 1) k++;
             }
         }
         j++;
@@ -328,7 +326,7 @@ void select1(char fields[25][25], char conds[25][25], char values[25][40], Accou
     Account *p = head;
     while (p != NULL) //проходим по всем записям
     {
-        if (is_suitable(fields, conds, values, p)) //если подходит под условие
+        if (isSuitable(fields, conds, values, p)) //если подходит под условие
         {
             count++;
             print_selected(p, order, fout); //выводим выбранные поля этой записи
@@ -346,12 +344,12 @@ delete1(char fields[25][25], char conds[25][25], char values[25][40], Account *h
     Account *p = head, *p1 = p;
     while (p != NULL) //пока не дойдём до конца списка
     {
-        if (is_suitable(fields, conds, values, p)) {
+        if (isSuitable(fields, conds, values, p)) {
             if (p == head) //если запись является началом списка
             {
                 head = p->next;
                 p1 = head;
-                free_p(p);
+                deleteEntry(p);
                 (*count_free)++;
                 p = p1;
             } else if (p->next == NULL) //если запись является концом спискка
@@ -359,7 +357,7 @@ delete1(char fields[25][25], char conds[25][25], char values[25][40], Account *h
                 p1 = head;
                 while (p1->next != p) p1 = p1->next;
                 p1->next = NULL;
-                free_p(p);
+                deleteEntry(p);
                 (*count_free)++;
                 p = NULL;
             } else //запись является ни началом, ни концом списка
@@ -367,7 +365,7 @@ delete1(char fields[25][25], char conds[25][25], char values[25][40], Account *h
                 p1 = head;
                 while (p1->next != p) p1 = p1->next;
                 p1->next = p->next;
-                free_p(p);
+                deleteEntry(p);
                 (*count_free)++;
                 p = p1->next;
             }
@@ -407,7 +405,7 @@ void update_p(char updates[1000], Account *p) {
         else if (compare(field, worker_)) strcpy(p->worker, value);
         else if (compare(field, weight_)) p->weight = atoi(value);
         else if (compare(field, count_)) p->count = atoi(value);
-        else if (compare(field, date_)) p->date = convert_date(value);
+        else if (compare(field, date_)) p->date = convertDate(value);
     }
 }
 
@@ -417,7 +415,7 @@ void update_list(char fields[25][25], char conds[25][25], char values[25][40], c
     Account *p = head;
     while (p != NULL) //пока не дойдёт до конца списка
     {
-        if (is_suitable(fields, conds, values, p)) //проверяем запись на соответствие условиям
+        if (isSuitable(fields, conds, values, p)) //проверяем запись на соответствие условиям
         {
             update_p(updates, p);
             count++;
@@ -471,7 +469,7 @@ int is_similar(char fields[1000], Account *p, Account *p1) {
                             if (p->count != p1->count) return 0;
                         } else {
                             if (compare(field, date_)) {
-                                if (!(compare_date(p->date, p1->date))) return 0;
+                                if (!(compareDate(p->date, p1->date))) return 0;
 
                             }
                         }
@@ -493,12 +491,12 @@ Account *uniq(char fields[1000], Account *head, int *count_free, FILE *fout) {
             if (is_similar(fields, p, p1)) {
                 if (p == head) {
                     head = p->next;
-                    free_p(p);
+                    deleteEntry(p);
                     (*count_free)++;
                     count++;
                 } else {
                     prev->next = p->next;
-                    free_p(p);
+                    deleteEntry(p);
                     (*count_free)++;
                     count++;
                 }
@@ -578,33 +576,33 @@ int main() {
             }
             if (compare(command, insertQuery)) {
                 if ((p_sender = strstr(line, "sender=")) == NULL) {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 if ((p_name = strstr(line, "name=")) == NULL) {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 if ((p_worker = strstr(line, "worker=")) == NULL) {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 if ((p_weight = strstr(line, "weight=")) == NULL) {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 if ((p_count = strstr(line, "count=")) == NULL) {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 if ((p_date = strstr(line, "date=")) == NULL) {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 cur = (Account *) malloc(sizeof(Account));
                 countMalloc++;
                 sscanf(p_date, "date=%s", dates);
-                cur->date = convert_date(dates);
+                cur->date = convertDate(dates);
                 sscanf(p_sender, "sender=%s", cur->sender);
                 sscanf(p_name, "name=%s", cur->name);
                 sscanf(p_worker, "worker=%s", cur->worker);
@@ -659,7 +657,7 @@ int main() {
                             values[j][i] = *p_cond++;
                         }
                         if (values[j][0] == '\0' || conds[j][0] == '\0') {
-                            print_incorrect(fout, line);
+                            printIncorrect(fout, line);
                             break;
                         }
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
@@ -671,7 +669,7 @@ int main() {
                             p_cond++; //двигаем указатель p_cond до пробела или конца строки
                         if (*p_cond == ' ') p_cond++;
                         j++; //считывание условия закончено
-                    } else print_incorrect(fout, line);
+                    } else printIncorrect(fout, line);
 
                 }
                 select1(fields, conds, values, head, order_list, fout);
@@ -679,7 +677,7 @@ int main() {
                 sscanf(line, "delete %s", first_cond);
                 p_cond = strstr(line, first_cond);
                 if (*first_cond == '\0') {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 while (*p_cond != '\0') {
@@ -708,7 +706,7 @@ int main() {
                             values[j][i] = *p_cond++;
                         }
                         if (values[j][0] == '\0' || conds[j][0] == '\0') {
-                            print_incorrect(fout, line);
+                            printIncorrect(fout, line);
                             break;
                         }
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
@@ -720,7 +718,7 @@ int main() {
                             p_cond++; //двигаем указатель p_cond до пробела или конца строки
                         if (*p_cond == ' ') p_cond++;
                         j++; //считывание условия закончено
-                    } else print_incorrect(fout, line);
+                    } else printIncorrect(fout, line);
                 }
                 head = delete1(fields, conds, values, head, &countFree, fout);
             } else if (compare(command, updateQuery)) {
@@ -756,7 +754,7 @@ int main() {
                             values[j][i] = *p_cond++;
                         }
                         if (values[j][0] == '\0' || conds[j][0] == '\0') {
-                            print_incorrect(fout, line);
+                            printIncorrect(fout, line);
                             break;
                         }
                         while (*p_cond != ' ' && *p_cond != '\0') p_cond++;
@@ -768,16 +766,16 @@ int main() {
                             p_cond++; //двигаем указатель p_cond до пробела или конца строки
                         if (*p_cond == ' ') p_cond++;
                         j++; //считывание условия закончено
-                    } else print_incorrect(fout, line);
+                    } else printIncorrect(fout, line);
                 }
                 update_list(fields, conds, values, updates, head, fout);
             } else if (compare(command, uniqQuery)) {
                 if (sscanf(line, "uniq %s", order_list) == EOF) {
-                    print_incorrect(fout, line);
+                    printIncorrect(fout, line);
                     continue;
                 }
                 head = uniq(order_list, head, &countFree, fout);
-            } else print_incorrect(fout, line);
+            } else printIncorrect(fout, line);
         }
         fin = stdin;
     }
