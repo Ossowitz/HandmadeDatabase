@@ -7,7 +7,7 @@
 #define MEMSTAT_FILE            "memstat.txt"
 
 #define EXCEPTION               "\033[1;31m%s\033[0m\n"
-
+#define INCORRECT               "incorrect: "
 #define OPEN_FILE_EXCEPTION     "+ OPEN_FILE_EXCEPTION +"
 
 typedef struct Date {
@@ -97,8 +97,12 @@ Date convertDate(char *values) {
 // Error
 void printIncorrect(FILE *fout, char line[]) {
     int i = 0;
-    fprintf(fout, "incorrect: ");
-    printf("incorrect: ");
+    fprintf(fout,
+            INCORRECT
+    );
+    printf(EXCEPTION,
+           INCORRECT
+    );
     for (i = 0; i < 20; i++) {
         fprintf(fout, "%c", line[i]);
         printf("%c", line[i]);
@@ -109,59 +113,55 @@ void printIncorrect(FILE *fout, char line[]) {
 
 /* Проверяет, подходит ли запись */
 int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Account *p) {
-    char sender_[] = "sender";
-    char name_[] = "name";
-    char weight_[] = "weight";
-    char count_[] = "count";
-    char worker_[] = "worker";
-    char date_[] = "date";
-    char equal_[] = "==";
-    char moreequal_[] = ">=";
-    char lessequal_[] = "<=";
-    char more_[] = ">";
-    char less_[] = "<";
-    char notequal_[] = "!=";
+    char senderField[]       = "sender";
+    char nameField[]         = "name";
+    char weightField[]       = "weight";
+    char countField[]        = "count";
+    char workerField[]       = "worker";
+    char dateField[]         = "date";
+    char equalOperator[]     = "==";
+    char moreEqualOperator[] = ">=";
+    char lessEqualOperator[] = "<=";
+    char moreOperator[]      = ">";
+    char lessOperator[]      = "<";
+    char notEqualOperator[]  = "!=";
     int j = 0, k = 0, i = 0, n = 0;
     int count1 = 0, count2 = 0;
     char *c;
     while (fields[n][0] != '\0') n++; //считаем количество условий
     while (j < n) {
-
-        if (compare(fields[j], weight_)) // условие для веса
-        {
-            if (compare(conds[j], equal_)) //если в условии знак равно
-            {
+        if (compare(fields[j], weightField)) { // условие для веса
+            if (compare(conds[j], equalOperator)) { //если в условии знак равно
                 if (p->weight == atoi(values[j])) k++;
-            } else if (compare(conds[j], notequal_)) {
+            } else if (compare(conds[j], notEqualOperator)) {
                 if (p->weight != atoi(values[j])) k++;
-            } else if (compare(conds[j], moreequal_)) {
+            } else if (compare(conds[j], moreEqualOperator)) {
                 if (p->weight >= atoi(values[j])) k++;
-            } else if (compare(conds[j], lessequal_)) {
+            } else if (compare(conds[j], lessEqualOperator)) {
                 if (p->weight <= atoi(values[j])) k++;
-            } else if (compare(conds[j], more_)) {
+            } else if (compare(conds[j], moreOperator)) {
                 if (p->weight > atoi(values[j])) k++;
-            } else if (compare(conds[j], less_)) {
+            } else if (compare(conds[j], lessOperator)) {
                 if (p->weight < atoi(values[j])) k++;
             }
-        } else if (compare(fields[j], count_)) //условие для количества
-        {
-            if (compare(conds[j], equal_)) {
+        } else if (compare(fields[j], countField)) { //условие для количества
+            if (compare(conds[j], equalOperator)) {
                 if (p->count == atoi(values[j])) k++;
-            } else if (compare(conds[j], notequal_)) {
+            } else if (compare(conds[j], notEqualOperator)) {
                 if (p->count != atoi(values[j])) k++;
-            } else if (compare(conds[j], moreequal_)) {
+            } else if (compare(conds[j], moreEqualOperator)) {
                 if (p->count >= atoi(values[j])) k++;
-            } else if (compare(conds[j], lessequal_)) {
+            } else if (compare(conds[j], lessEqualOperator)) {
                 if (p->count <= atoi(values[j])) k++;
-            } else if (compare(conds[j], more_)) {
+            } else if (compare(conds[j], moreOperator)) {
                 if (p->count > atoi(values[j])) k++;
-            } else if (compare(conds[j], less_)) {
+            } else if (compare(conds[j], lessOperator)) {
                 if (p->count < atoi(values[j])) k++;
             }
-        } else if (compare(fields[j], sender_)) {
+        } else if (compare(fields[j], senderField)) {
             char ch_value[20];
             c = values[j];
-            if (compare(conds[j], equal_)) {
+            if (compare(conds[j], equalOperator)) {
                 while (*c != '\0') {
                     i = 0;
                     while (i < 20) ch_value[i++] = '\0';
@@ -173,7 +173,7 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
                         break;
                     }
                 }
-            } else if (compare(conds[j], notequal_)) {
+            } else if (compare(conds[j], notEqualOperator)) {
                 while (*c != '\0') {
                     i = 0;
                     while (i < 20) ch_value[i++] = '\0';
@@ -185,10 +185,10 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
                 }
                 if (count1 == count2) k++;
             }
-        } else if (compare(fields[j], name_)) {
+        } else if (compare(fields[j], nameField)) {
             char ch_value[20];
             c = values[j];
-            if (compare(conds[j], equal_)) {
+            if (compare(conds[j], equalOperator)) {
                 while (*c != '\0') {
                     i = 0;
                     while (i < 20) ch_value[i++] = '\0';
@@ -200,7 +200,7 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
                         break;
                     }
                 }
-            } else if (compare(conds[j], notequal_)) {
+            } else if (compare(conds[j], notEqualOperator)) {
                 while (*c != '\0') {
                     i = 0;
                     while (i < 20) ch_value[i++] = '\0';
@@ -212,10 +212,10 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
                 }
                 if (count1 == count2) k++;
             }
-        } else if (compare(fields[j], worker_)) {
+        } else if (compare(fields[j], workerField)) {
             char ch_value[20];
             c = values[j];
-            if (compare(conds[j], equal_)) {
+            if (compare(conds[j], equalOperator)) {
                 while (*c != '\0') {
                     i = 0;
                     while (i < 20) ch_value[i++] = '\0';
@@ -227,7 +227,7 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
                         break;
                     }
                 }
-            } else if (compare(conds[j], notequal_)) {
+            } else if (compare(conds[j], notEqualOperator)) {
                 while (*c != '\0') {
                     i = 0;
                     while (i < 20) ch_value[i++] = '\0';
@@ -239,18 +239,18 @@ int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Acc
                 }
                 if (count1 == count2) k++;
             }
-        } else if (compare(fields[j], date_)) {
-            if (compare(conds[j], equal_)) {
+        } else if (compare(fields[j], dateField)) {
+            if (compare(conds[j], equalOperator)) {
                 if (compareDate(p->date, convertDate(values[j])) == 0) k++;
-            } else if (compare(conds[j], notequal_)) {
+            } else if (compare(conds[j], notEqualOperator)) {
                 if (compareDate(p->date, convertDate(values[j])) != 0) k++;
-            } else if (compare(conds[j], more_)) {
+            } else if (compare(conds[j], moreOperator)) {
                 if (compareDate(p->date, convertDate(values[j])) == 1) k++;
-            } else if (compare(conds[j], less_)) {
+            } else if (compare(conds[j], lessOperator)) {
                 if (compareDate(p->date, convertDate(values[j])) == -1) k++;
-            } else if (compare(conds[j], moreequal_)) {
+            } else if (compare(conds[j], moreEqualOperator)) {
                 if (compareDate(p->date, convertDate(values[j])) != -1) k++;
-            } else if (compare(conds[j], lessequal_)) {
+            } else if (compare(conds[j], lessEqualOperator)) {
                 if (compareDate(p->date, convertDate(values[j])) != 1) k++;
             }
         }
