@@ -26,12 +26,16 @@ typedef struct Node {
     struct Node *next;
 } Account;
 
-void checkFileOpened(FILE *fin) {
-    if (fin == NULL) {
+/**
+ * @param: file - file we check for availability
+ * @brief: check file for availability
+ */
+void checkFileOpened(FILE *file) {
+    if (file == NULL) {
         printf(EXCEPTION,
                OPEN_FILE_EXCEPTION
         );
-        fprintf(fin,
+        fprintf(file,
                 OPEN_FILE_EXCEPTION
         );
         exit(1);
@@ -39,10 +43,11 @@ void checkFileOpened(FILE *fin) {
 }
 
 int compare(char *s, char *x) {
-    int i = 0;
-    for (i = 0; (s[i] != '\0' || x[i] != '\0'); i++)
-        if (s[i] != x[i])
+    for (int i = 0; (s[i] != '\0' || x[i] != '\0'); i++) {
+        if (s[i] != x[i]) {
             return 0;
+        }
+    }
     return 1;
 }
 
