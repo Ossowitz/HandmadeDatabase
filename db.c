@@ -42,6 +42,11 @@ void checkFileOpened(FILE *file) {
     }
 }
 
+/**
+ * @param:  s - first pointer
+ * @param:  x - second pointer
+ * @return: return 0 if not equal, otherwise 1
+ */
 int compare(char *s, char *x) {
     for (int i = 0; (s[i] != '\0' || x[i] != '\0'); i++) {
         if (s[i] != x[i]) {
