@@ -56,6 +56,13 @@ int compare(char *s, char *x) {
     return 1;
 }
 
+/**
+ * @param:  date1 - first date
+ * @param:  date2 - second date
+ * @return: if equal return 0.
+ *              if the first date is greater, then 1.
+ *                  if the second date is greater, then -1
+ */
 int compareDate(Date date1, Date date2) {
     if (date1.year == date2.year) {
         if (date1.month == date2.month) {
@@ -78,7 +85,10 @@ int compareDate(Date date1, Date date2) {
     }
 }
 
-// Удаление записи с БД и освобождение памяти
+/**
+ * @param  p - pointer to the entry we want to delete
+ * @brief: delete of database record and release of memory
+ */
 void deleteEntry(Account *p) {
     p->date.year = -1;
     p->date.month = -1;
