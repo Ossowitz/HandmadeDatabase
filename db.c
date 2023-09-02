@@ -86,7 +86,7 @@ int compareDate(Date date1, Date date2) {
 }
 
 /**
- * @param  p - pointer to the entry we want to delete
+ * @param: p - pointer to the entry we want to delete
  * @brief: delete of database record and release of memory
  */
 void deleteEntry(Account *p) {
@@ -131,7 +131,9 @@ void printIncorrect(FILE *fout, char line[]) {
     printf("\n");
 }
 
-/* Проверяет, подходит ли запись */
+/**
+ * @return: checks if an entry matches
+ */
 int isSuitable(char fields[25][25], char conds[25][25], char values[25][40], Account *p) {
     char senderField[]       = "sender";
     char nameField[]         = "name";
